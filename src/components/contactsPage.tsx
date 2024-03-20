@@ -39,9 +39,9 @@ export default function ContactsPage() {
 		return <h1>Loading</h1>
 	}
 
-	const handleDeleteBtn = (id: string) => {
+	const handleDeleteBtn = async (id: string) => {
 		setChangeInfo(true);
-		deleteContact(id);
+		await deleteContact(id);
 		revalidatePathAction('/contacts');
 		setChangeInfo(false);
 	}
