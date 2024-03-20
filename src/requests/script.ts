@@ -39,7 +39,6 @@ export const postContact = async ({
 	email: string;
 	phone: string;
 }): Promise<Contact | null> => {
-	console.log(name, email, phone);
 	try {
 		const formData = new URLSearchParams();
 		formData.append('name', name);
