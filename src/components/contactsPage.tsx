@@ -1,4 +1,8 @@
-import { getAllContacts } from '@/requests/script';
+'use client';
+
+import { revalidatePathAction } from '@/actions/realidate-path';
+import { AllContacts, deleteContact, getAllContacts } from '@/requests/script';
+import { Contact } from '@/types/contact';
 import {
 	Button,
 	Card,
@@ -9,13 +13,37 @@ import {
 	Input,
 } from '@chakra-ui/react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
-export default async function ContactsPage() {
-	const data = await getAllContacts();
-	console.log(data);
+export default function ContactsPage() {
+	const [data, setData] = useState<AllContacts | null>();
+	const [changeInfo, setChangeInfo] = useState<Boolean | 'error'>(false);
+	
+	const getData = async () => {
+		try {
+			const contactsData = await getAllContacts();
+			setData(contactsData);
+			return contactsData;
+		} catch(error) {
+			setChangeInfo('error');
+		}
+	}
 
-	if (!data) {
+	useEffect(() => {
+		getData();
+	}, [changeInfo])
+
+	if (!data && changeInfo === 'error') {
 		return <h1>Internal Error</h1>;
+	} else if(!data && changeInfo === false) {
+		return <h1>Loading</h1>
+	}
+
+	const handleDeleteBtn = (id: string) => {
+		setChangeInfo(true);
+		deleteContact(id);
+		revalidatePathAction('/contacts');
+		setChangeInfo(false);
 	}
 
 	return (
@@ -42,7 +70,7 @@ export default async function ContactsPage() {
 								<Button size='sm' colorScheme='teal' mr={2}>
 									Edit
 								</Button>
-								<Button size='sm' colorScheme='red'>
+								<Button size='sm' onClick={() => handleDeleteBtn(String(contact.id))} colorScheme='red'>
 									Delete
 								</Button>
 							</li>
