@@ -1,5 +1,6 @@
 'use client';
 
+import { revalidatePathAction } from '@/actions/realidate-path';
 import { postContact } from '@/requests/script';
 import {
 	Button,
@@ -23,6 +24,7 @@ export default function NewContact() {
 	const handleAddBtn = async () => {
 		console.log(name, email, phone);
 		const newContact = await postContact({ name, email, phone });
+		revalidatePathAction('/contacts');
     push('/contacts');
 		console.log(newContact);
 	};
