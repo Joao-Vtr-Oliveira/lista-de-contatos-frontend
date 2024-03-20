@@ -1,12 +1,16 @@
 import { Contact } from '@/types/contact';
 
-type AllContacts = {
+export type AllContacts = {
 	contacts: Contact[];
 };
 
 export const getAllContacts = async () => {
 	try {
-		const response = await fetch('http://localhost:80/contacts/');
+		const response = await fetch('http://localhost:80/contacts/', {
+			next: {
+				revalidate: 5,
+			}
+		});
 		const data = await response.json();
 		return data as AllContacts;
 	} catch (error) {
