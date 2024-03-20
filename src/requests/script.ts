@@ -1,5 +1,4 @@
 import { Contact } from '@/types/contact';
-import axios from 'axios';
 
 type AllContacts = {
 	contacts: Contact[];
@@ -7,8 +6,9 @@ type AllContacts = {
 
 export const getAllContacts = async () => {
 	try {
-		const data = await axios.get('http://localhost:80/contacts/');
-		return data.data as AllContacts;
+		const response = await fetch('http://localhost:80/contacts/');
+		const data = await response.json();
+		return data as AllContacts;
 	} catch (error) {
 		console.log(`Error: `, error);
 		return null;
@@ -17,8 +17,9 @@ export const getAllContacts = async () => {
 
 export const getContact = async (id: string) => {
 	try {
-		const data = await axios.get(`http://localhost:80/contacts/${id}`);
-		return data.data as Contact;
+		const response = await fetch(`http://localhost:80/contacts/${id}`);
+		const data = await response.json();
+		return data as Contact;
 	} catch (error) {
 		console.log(`Error: `, error);
 		return null;
@@ -36,28 +37,35 @@ export const postContact = async ({
 }): Promise<Contact | null> => {
 	console.log(name, email, phone);
 	try {
-		const data = await axios.post(
-			`http://localhost:80/contacts/`,
-			{
-				name: name,
-				email: email,
-				phone: phone,
+		const formData = new URLSearchParams();
+		formData.append('name', name);
+		formData.append('email', email);
+		formData.append('phone', phone);
+
+		const response = await fetch('http://localhost:80/contacts/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
 			},
-			{
-				headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-			}
-		);
-		return data.data as Contact;
+			body: formData,
+		});
+
+		const data = await response.json();
+		return data as Contact;
 	} catch (error) {
 		console.log(`Error: `, error);
 		return null;
 	}
 };
 
+
 export const deleteContact = async (id: string) => {
 	try {
-		const data = await axios.delete(`http://localhost:80/contacts/${id}`);
-		return data.data as Contact;
+		const response = await fetch(`http://localhost:80/contacts/${id}`, {
+			method: 'DELETE',
+		});
+		const data = await response.json();
+		return data as Contact;
 	} catch (error) {
 		console.log(`Error: `, error);
 		return null;
