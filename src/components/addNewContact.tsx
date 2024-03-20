@@ -22,7 +22,10 @@ export default function NewContact() {
 	const { push } = useRouter();
 
 	const handleAddBtn = async () => {
-		console.log(name, email, phone);
+		if(name === '' || email === '' || phone === '') {
+			alert('Please, fill all the camps');
+			return;
+		}
 		const newContact = await postContact({ name, email, phone });
 		revalidatePathAction('/contacts');
     push('/contacts');
@@ -51,6 +54,7 @@ export default function NewContact() {
 						placeholder='Name'
 						value={name}
 						onChange={(e) => setName(e.target.value)}
+						required
 					/>
 					<Input
 						flex='1'
@@ -60,6 +64,7 @@ export default function NewContact() {
 						placeholder='Email'
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
+						required
 					/>
 					<Input
 						flex='1'
@@ -69,6 +74,7 @@ export default function NewContact() {
 						placeholder='Phone'
 						value={phone}
 						onChange={(e) => setPhone(e.target.value)}
+						required
 					/>
 				</CardBody>
 				<CardFooter justify='center' p={4} bg='teal.500'>
