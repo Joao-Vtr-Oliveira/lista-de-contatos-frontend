@@ -2,7 +2,6 @@
 
 import { revalidatePathAction } from '@/actions/realidate-path';
 import { AllContacts, deleteContact, getAllContacts } from '@/requests/script';
-import { Contact } from '@/types/contact';
 import {
 	Button,
 	Card,
