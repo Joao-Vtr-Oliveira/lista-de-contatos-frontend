@@ -3,7 +3,7 @@ import { PageParams } from '@/types/pageParams';
 
 const EditContactPage = ({ params }: PageParams) => {
 	return (
-		<main className='flex min-h-screen flex-col items-center justify-center p-24'>
+		<main className='flex min-h-screen flex-col items-center justify-center'>
 			<EditContact params={params} />
 		</main>
 	);
