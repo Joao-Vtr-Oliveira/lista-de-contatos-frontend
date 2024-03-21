@@ -65,7 +65,7 @@ export default function EditContact({ params }: PageParams) {
 				borderRadius='lg'
 				boxShadow='lg'
 			>
-				<CardHeader textAlign='center' bg='teal.500' py={4}>
+				<CardHeader textAlign='center' bg='yellow.500' py={4}>
 					<Heading as='h1' size='xl' color='white'>
 						{data && <Link href='/contacts'>{data.contact.name}</Link>}
 					</Heading>
@@ -98,7 +98,7 @@ export default function EditContact({ params }: PageParams) {
 						onChange={(e) => setPhone(e.target.value)}
 					/>
 				</CardBody>
-				<CardFooter justify='center' p={4} bg='teal.500'>
+				<CardFooter justify='center' p={4} bg='yellow.500'>
 					<Button onClick={handleEditBtn} colorScheme='whiteAlpha'>
 						Edit Contact
 					</Button>

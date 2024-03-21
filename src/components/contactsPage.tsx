@@ -18,25 +18,25 @@ export default function ContactsPage() {
 	const [data, setData] = useState<AllContacts | null>();
 	const [changeInfo, setChangeInfo] = useState<Boolean | 'error'>(false);
 	const { push } = useRouter();
-	
+
 	const getData = async () => {
 		try {
 			const contactsData = await getAllContacts();
 			setData(contactsData);
 			return contactsData;
-		} catch(error) {
+		} catch (error) {
 			setChangeInfo('error');
 		}
-	}
+	};
 
 	useEffect(() => {
 		getData();
-	}, [changeInfo])
+	}, [changeInfo]);
 
 	if (!data && changeInfo === 'error') {
 		return <h1>Internal Error</h1>;
-	} else if(!data && changeInfo === false) {
-		return <h1>Loading</h1>
+	} else if (!data && changeInfo === false) {
+		return <h1>Loading</h1>;
 	}
 
 	const handleDeleteBtn = async (id: string) => {
@@ -44,11 +44,11 @@ export default function ContactsPage() {
 		await deleteContact(id);
 		revalidatePathAction('/contacts');
 		setChangeInfo(false);
-	}
+	};
 
 	const handleEditBtn = (id: string) => {
 		push(`/contacts/${id}`);
-	}
+	};
 
 	return (
 		<Card
@@ -58,7 +58,7 @@ export default function ContactsPage() {
 			borderRadius='lg'
 			boxShadow='lg'
 		>
-			<CardHeader textAlign='center' bg='teal.500' py={4}>
+			<CardHeader textAlign='center' bg='purple.500' py={4}>
 				<Heading as='h1' size='xl' color='white'>
 					Contacts
 				</Heading>
@@ -71,17 +71,26 @@ export default function ContactsPage() {
 								<p className='text-lg font-semibold'>{contact.name}</p>
 								<p className='text-gray-600'>{contact.email}</p>
 								<p className='text-gray-600'>{contact.phone}</p>
-								<Button size='sm' onClick={() => handleEditBtn(String(contact.id))} colorScheme='teal' mr={2}>
+								<Button
+									size='sm'
+									onClick={() => handleEditBtn(String(contact.id))}
+									colorScheme='teal'
+									mr={2}
+								>
 									Edit
 								</Button>
-								<Button size='sm' onClick={() => handleDeleteBtn(String(contact.id))} colorScheme='red'>
+								<Button
+									size='sm'
+									onClick={() => handleDeleteBtn(String(contact.id))}
+									colorScheme='red'
+								>
 									Delete
 								</Button>
 							</li>
 						))}
 				</ul>
 			</CardBody>
-			<CardFooter justify='center' p={4} bg='teal.500'>
+			<CardFooter justify='center' p={4} bg='purple.500'>
 				<Button colorScheme='whiteAlpha'>
 					<Link href='/contacts/new'>New Contact</Link>
 				</Button>
