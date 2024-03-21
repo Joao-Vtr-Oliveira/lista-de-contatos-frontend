@@ -4,3 +4,7 @@ export type Contact = {
   email: string;
   phone: string;
 }
+
+export type UniqueContact = {
+	contact: Contact
+}
