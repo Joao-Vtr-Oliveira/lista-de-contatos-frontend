@@ -61,6 +61,40 @@ export const postContact = async ({
 	}
 };
 
+export const putContact = async ({
+	id,
+	name,
+	email,
+	phone,
+}: {
+	id: string;
+	name?: string;
+	email?: string;
+	phone?: string;
+}): Promise<Contact | null> => {
+	try {
+		const formData = new URLSearchParams();
+		if(name) formData.append('name', name);
+		if(email) formData.append('email', email);
+		if(phone) formData.append('phone', phone);
+
+		const response = await fetch(`http://localhost:80/contacts/${id}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: formData,
+		});
+
+		const data = await response.json();
+		return data as Contact;
+	} catch (error) {
+		console.log(`Error: `, error);
+		return null;
+	}
+};
+
+
 export const deleteContact = async (id: string) => {
 	try {
 		const response = await fetch(`http://localhost:80/contacts/${id}`, {
