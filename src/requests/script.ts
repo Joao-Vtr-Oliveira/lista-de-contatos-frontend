@@ -1,4 +1,4 @@
-import { Contact } from '@/types/contact';
+import { Contact, UniqueContact } from '@/types/contact';
 
 export type AllContacts = {
 	contacts: Contact[];
@@ -9,7 +9,7 @@ export const getAllContacts = async () => {
 		const response = await fetch('http://localhost:80/contacts/', {
 			next: {
 				revalidate: 5,
-			}
+			},
 		});
 		const data = await response.json();
 		return data as AllContacts;
@@ -23,7 +23,7 @@ export const getContact = async (id: string) => {
 	try {
 		const response = await fetch(`http://localhost:80/contacts/${id}`);
 		const data = await response.json();
-		return data as Contact;
+		return data as UniqueContact;
 	} catch (error) {
 		console.log(`Error: `, error);
 		return null;
@@ -60,7 +60,6 @@ export const postContact = async ({
 		return null;
 	}
 };
-
 
 export const deleteContact = async (id: string) => {
 	try {
