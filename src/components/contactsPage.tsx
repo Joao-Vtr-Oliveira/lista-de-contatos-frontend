@@ -9,14 +9,15 @@ import {
 	CardFooter,
 	CardHeader,
 	Heading,
-	Input,
 } from '@chakra-ui/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function ContactsPage() {
 	const [data, setData] = useState<AllContacts | null>();
 	const [changeInfo, setChangeInfo] = useState<Boolean | 'error'>(false);
+	const { push } = useRouter();
 	
 	const getData = async () => {
 		try {
@@ -45,6 +46,10 @@ export default function ContactsPage() {
 		setChangeInfo(false);
 	}
 
+	const handleEditBtn = (id: string) => {
+		push(`/contacts/${id}`);
+	}
+
 	return (
 		<Card
 			maxW='4xl'
@@ -66,7 +71,7 @@ export default function ContactsPage() {
 								<p className='text-lg font-semibold'>{contact.name}</p>
 								<p className='text-gray-600'>{contact.email}</p>
 								<p className='text-gray-600'>{contact.phone}</p>
-								<Button size='sm' colorScheme='teal' mr={2}>
+								<Button size='sm' onClick={() => handleEditBtn(String(contact.id))} colorScheme='teal' mr={2}>
 									Edit
 								</Button>
 								<Button size='sm' onClick={() => handleDeleteBtn(String(contact.id))} colorScheme='red'>
