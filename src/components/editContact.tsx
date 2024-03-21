@@ -1,7 +1,9 @@
 'use client';
 
 import { revalidatePathAction } from '@/actions/realidate-path';
-import { postContact } from '@/requests/script';
+import { getContact, putContact } from '@/requests/script';
+import { UniqueContact } from '@/types/contact';
+import { PageParams } from '@/types/pageParams';
 import {
 	Button,
 	Card,
@@ -11,26 +13,48 @@ import {
 	Heading,
 	Input,
 } from '@chakra-ui/react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function EditContact() {
+export default function EditContact({ params }: PageParams) {
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [phone, setPhone] = useState('');
+	const [data, setData] = useState<UniqueContact | null>();
+	const [changeInfo, setChangeInfo] = useState<Boolean | 'error'>(false);
 
 	const { push } = useRouter();
 
-	const handleAddBtn = async () => {
-		if(name === '' || email === '' || phone === '') {
-			alert('Please, fill all the camps');
-			return;
+	const getData = async () => {
+		try {
+			const contactsData = await getContact(params.id);
+			console.log(contactsData);
+			setData(contactsData);
+			return contactsData;
+		} catch (error) {
+			console.log('Error: ', error);
+			setChangeInfo('error');
 		}
-		const newContact = await postContact({ name, email, phone });
-		revalidatePathAction('/contacts');
-    push('/contacts');
-		console.log(newContact);
 	};
+
+	useEffect(() => {
+		getData();
+	}, []);
+
+	const handleEditBtn = async () => {
+		const id = params.id;
+		const editedContact = await putContact({ id, name, email, phone });
+		revalidatePathAction('/contacts');
+		push('/contacts');
+		console.log(editedContact);
+	};
+
+	if (!data && changeInfo === 'error') {
+		return <h1>Internal Error</h1>;
+	} else if (!data && changeInfo === false) {
+		return <h1>Loading</h1>;
+	}
 
 	return (
 		<main className='flex min-h-screen flex-col items-center justify-center p-24'>
@@ -43,7 +67,7 @@ export default function EditContact() {
 			>
 				<CardHeader textAlign='center' bg='teal.500' py={4}>
 					<Heading as='h1' size='xl' color='white'>
-						New Contact
+						{data && <Link href='/contacts'>{data.contact.name}</Link>}
 					</Heading>
 				</CardHeader>
 				<CardBody textAlign='center' p={4}>
@@ -51,35 +75,32 @@ export default function EditContact() {
 						flex='1'
 						mb={{ base: 10, sm: 10 }}
 						mr={{ base: 0, sm: 2 }}
-						placeholder='Name'
+						placeholder={data?.contact.name}
 						value={name}
 						onChange={(e) => setName(e.target.value)}
-						required
 					/>
 					<Input
 						flex='1'
 						type='email'
 						mb={{ base: 10, sm: 10 }}
 						mr={{ base: 0, sm: 2 }}
-						placeholder='Email'
+						placeholder={data?.contact.email}
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
-						required
 					/>
 					<Input
 						flex='1'
 						type='number'
 						mb={{ base: 10, sm: 10 }}
 						mr={{ base: 0, sm: 2 }}
-						placeholder='Phone'
+						placeholder={data?.contact.phone}
 						value={phone}
 						onChange={(e) => setPhone(e.target.value)}
-						required
 					/>
 				</CardBody>
 				<CardFooter justify='center' p={4} bg='teal.500'>
-					<Button onClick={handleAddBtn} colorScheme='whiteAlpha'>
-						Add new contact
+					<Button onClick={handleEditBtn} colorScheme='whiteAlpha'>
+						Edit Contact
 					</Button>
 				</CardFooter>
 			</Card>
